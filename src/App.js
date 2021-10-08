@@ -1,23 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react'
+import { Route, Switch } from 'react-router-dom';
+import { makeStyles } from "@material-ui/core/styles";
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
+import styles from "./assets/jss/layoutStyles";
+import routes from './routes'
 
+const useStyles = makeStyles(styles);
 function App() {
+  const classes = useStyles();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className={classes.wrapper}>
+        <Sidebar
+          routes={routes}
+          handleDrawerToggle={handleDrawerToggle}
+          open={mobileOpen}
+        />
+        <div className={classes.mainPanel}>
+        <Navbar
+          handleDrawerToggle={handleDrawerToggle}
+        />
+        <div
+          className={classes.content}
         >
-          Learn React
-        </a>
-      </header>
+          <div className={classes.container}>
+            <Switch>
+              {routes.map((prop, key) => {
+                return (
+                  <Route
+                    exact
+                    path={prop.path}
+                    component={prop.component}
+                    key={key}
+                  />
+                )
+              })}
+            </Switch>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
